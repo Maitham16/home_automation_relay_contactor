@@ -3,6 +3,7 @@
 #include <ESPmDNS.h>
 #include <WebServer.h>
 
+// Configuration
 static const char* MY_MDNS_HOSTNAME = "mainesp";
 WebServer server(80);
 
@@ -14,6 +15,7 @@ void handleReset();
 void handleScanWiFi();
 void handleConnectWiFi();
 
+// HTML Styles
 String styleHeader = R"rawliteral(
 <!DOCTYPE html>
 <html>
@@ -85,7 +87,9 @@ String styleFooter = R"rawliteral(
 </html>
 )rawliteral";
 
-// -- SETUP ---------------------------------------------------------------------------
+// ========================
+// Setup Function
+// ========================
 void setup() {
   Serial.begin(115200);
 
@@ -112,16 +116,19 @@ void setup() {
   Serial.println("HTTP server started");
 }
 
-// -- LOOP ----------------------------------------------------------------------------
+// ========================
+// Loop Function
+// ========================
 void loop() {
   server.handleClient();
 }
 
-// -- HANDLERS ------------------------------------------------------------------------
+// ========================
+// Handler Functions
+// ========================
 
 // Root Page
 void handleRoot() {
-  // Index page with professional style + links
   String html = styleHeader;
   html += R"rawliteral(
     <h2>Device Overview</h2>
@@ -138,7 +145,6 @@ void handleRoot() {
   server.send(200, "text/html", html);
 }
 
-// Status Page (Logic unchanged)
 void handleStatus() {
   String powerStatus = "ON";
   String json = "{";
@@ -147,7 +153,6 @@ void handleStatus() {
   server.send(200, "application/json", json);
 }
 
-// Settings Page (Logic unchanged)
 void handleSettings() {
   String json = "{";
   json += "\"ip\":\"" + WiFi.localIP().toString() + "\"";
@@ -155,7 +160,6 @@ void handleSettings() {
   server.send(200, "application/json", json);
 }
 
-// Debug Page
 void handleDebug() {
   String ipStr = WiFi.localIP().toString();
   String hostnameStr = MY_MDNS_HOSTNAME;
@@ -185,7 +189,6 @@ void handleDebug() {
   server.send(200, "text/html", html);
 }
 
-// Reset Page: clears WiFi credentials
 void handleReset() {
   String html = styleHeader;
   html += R"rawliteral(
@@ -197,7 +200,6 @@ void handleReset() {
   )rawliteral";
   html += styleFooter;
 
-  // If user is pressing "RESET NOW" as a POST request, do the reset
   if (server.method() == HTTP_POST) {
     WiFiManager wifiManager;
     wifiManager.resetSettings();
@@ -211,7 +213,6 @@ void handleReset() {
   server.send(200, "text/html", html);
 }
 
-// Scan WiFi: show available networks with signal strength
 void handleScanWiFi() {
   int n = WiFi.scanNetworks();
   String html = styleHeader;
@@ -241,7 +242,6 @@ void handleScanWiFi() {
   server.send(200, "text/html", html);
 }
 
-// Connect to new WiFi
 void handleConnectWiFi() {
   String newSSID = server.arg("ssid");
   String newPASS = server.arg("pass");

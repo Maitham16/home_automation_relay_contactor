@@ -141,6 +141,7 @@ void loop() {
         digitalWrite(GREEN_LED, HIGH);  // Green LED ON
         digitalWrite(RED_LED, LOW);     // Red LED OFF
 
+        // buzz for 3 seconds
         if (!buzz_active) {
           beepBuzzer();
           buzz_active = true;
@@ -352,22 +353,19 @@ String html = styleHeader;
   html += "<p>All settings and configurations will be erased.</p>";
   html += "<p>The device will now restart and return to its factory default settings.</p>";
 
-  // Send the response to the user before performing the reset
   html += "<a href='/'>Back to Home</a>";
   html += styleFooter;
   server.send(200, "text/html", html);
 
-  delay(2000); // Allow time for the response to be sent
+  delay(2000);
 
-  // 1. Erase the entire NVS partition
-  esp_err_t result = nvs_flash_erase(); // Erase the NVS partition
+  esp_err_t result = nvs_flash_erase();
   if (result == ESP_OK) {
     Serial.println("NVS flash erased successfully!");
   } else {
     Serial.printf("Failed to erase NVS flash: %s\n", esp_err_to_name(result));
   }
 
-  // 2. Restart the device to apply changes
   ESP.restart();
 }
 
@@ -390,7 +388,6 @@ void handleConnectWiFi() {
   html += "<h2>Connecting to " + newSSID + "...</h2>";
   html += "<p>Please wait while we attempt to connect.</p>";
 
-  // Disconnect from any existing WiFi
   WiFi.disconnect();
   delay(1000);
 
@@ -405,7 +402,7 @@ void handleConnectWiFi() {
   // Check connection status
   if (WiFi.status() == WL_CONNECTED) {
     html += "<p>Connected successfully! IP: " + WiFi.localIP().toString() + "</p>";
-    // Store credentials persistently
+
     WiFiManager wm;
     wm.setSaveConfigCallback([]() {
       Serial.println("WiFi credentials saved.");
@@ -421,7 +418,6 @@ void handleConnectWiFi() {
   server.send(200, "text/html", html);
 }
 
-// Scan WiFi: show available networks with signal strength
 void handleScanWiFi() {
   int n = WiFi.scanNetworks();
   String html = styleHeader;
