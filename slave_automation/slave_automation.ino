@@ -74,7 +74,7 @@ String styleHeader = R"rawliteral(
 String styleFooter = R"rawliteral(
   <div class="footer">
     <p>Designed by Eng. Maitham Alrubaye & Eng. Fadi Alkhazraji</p>
-    <p>All right reserved as EU regulations - Fabricated in 2025</p>
+    <p>All right reserved - Fabricated in 2025</p>
   </div>
 </div>
 </body>
