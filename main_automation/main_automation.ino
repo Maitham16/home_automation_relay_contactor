@@ -96,7 +96,7 @@ void setup() {
   WiFiManager wifiManager;
   
   wifiManager.setConfigPortalTimeout(30);
-  if (!wifiManager.autoConnect("SmartGadget-AP")) {
+  if (!wifiManager.autoConnect("Main-SmartGadget-AP")) {
     Serial.println("Failed to connect or configure WiFi. Restarting...");
     ESP.restart();
   }
@@ -133,7 +133,7 @@ void loop() {
   delay(500);
   return;
   }
-  
+
 }
 
 // ========================
