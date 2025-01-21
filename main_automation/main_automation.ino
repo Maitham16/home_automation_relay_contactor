@@ -101,6 +101,9 @@ void setup() {
     ESP.restart();
   }
 
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
+
   if (!MDNS.begin(MY_MDNS_HOSTNAME)) {
     Serial.println("Error starting mDNS responder!");
   } else {
