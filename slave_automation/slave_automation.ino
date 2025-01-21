@@ -97,9 +97,15 @@ void setup() {
   relayState = false;
 
   WiFiManager wifiManager;
+  
+  wifiManager.setConfigPortalTimeout(30);
   if (!wifiManager.autoConnect("SmartGadget-AP")) {
+    Serial.println("Failed to connect or configure WiFi. Restarting...");
     ESP.restart();
   }
+
+  WiFi.setAutoReconnect(true);
+  WiFi.persistent(true);
 
   if (!MDNS.begin("devicecontrol")) {
     Serial.println("Error starting mDNS responder for devicecontrol!");
@@ -125,7 +131,11 @@ void loop() {
   server.handleClient();
 
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("WiFi not connected. Waiting...");
+    Serial.println("WiFi not connected. Attempting to reconnect...");
+    digitalWrite(GREEN_LED, LOW);
+    digitalWrite(RED_LED, HIGH);
+    WiFi.reconnect();
+    delay(500);
     return;
   }
 

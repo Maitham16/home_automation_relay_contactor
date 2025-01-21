@@ -94,7 +94,10 @@ void setup() {
   Serial.begin(115200);
 
   WiFiManager wifiManager;
-  if (!wifiManager.autoConnect("Main-SmartGadget-AP")) {
+  
+  wifiManager.setConfigPortalTimeout(30);
+  if (!wifiManager.autoConnect("SmartGadget-AP")) {
+    Serial.println("Failed to connect or configure WiFi. Restarting...");
     ESP.restart();
   }
 
@@ -121,6 +124,16 @@ void setup() {
 // ========================
 void loop() {
   server.handleClient();
+
+  if (WiFi.status() != WL_CONNECTED) {
+  Serial.println("WiFi not connected. Attempting to reconnect...");
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(RED_LED, HIGH);
+  WiFi.reconnect();
+  delay(500);
+  return;
+  }
+  
 }
 
 // ========================
